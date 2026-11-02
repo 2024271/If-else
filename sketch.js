@@ -1,12 +1,9 @@
-// ==========================================
-// JARDIM ZEN DE LUZ E SOM - p5.js
-// ==========================================
 
 let ondas = [];
-let modoVisual = 1; // 1: Círculos, 2: Quadrados, 3: Triângulos, 4: Estrelas
+let modoVisual = 1; 
 let totalModos = 4;
 
-// Variáveis de Áudio (Web Audio API - Sem Copyright)
+// Áudio 
 let audioCtx;
 let musicaIniciada = false;
 
@@ -19,9 +16,9 @@ function draw() {
   // Fundo escuro com rasto suave (efeito de iluminação)
   background(240, 20, 12, 0.12);
 
-  // ----------------------------------------------------
-  // CONDICIONAL 1: Determinar o tom da cor pelo quadrante do rato
-  // ----------------------------------------------------
+  
+  // Determinar o tom da cor pelo quadrante do rato
+  
   let hueBase;
   if (mouseX < width / 2 && mouseY < height / 2) {
     hueBase = 200; // Azul Oceano
@@ -39,9 +36,9 @@ function draw() {
   line(width / 2, 0, width / 2, height);
   line(0, height / 2, width, height / 2);
 
-  // ----------------------------------------------------
+  
   // Atualizar e desenhar ondas
-  // ----------------------------------------------------
+  
   for (let i = ondas.length - 1; i >= 0; i--) {
     let o = ondas[i];
     
@@ -52,9 +49,9 @@ function draw() {
     stroke(o.cor, 70, 90, o.alfa);
     strokeWeight(2);
 
-    // ----------------------------------------------------
+    
     // CONDICIONAL 2: Desenhar as diferentes formas geométricas
-    // ----------------------------------------------------
+    
     if (o.forma === 1) {
       // Círculos
       ellipse(o.x, o.y, o.raio * 2);
@@ -78,9 +75,9 @@ function draw() {
     }
   }
 
-  // ----------------------------------------------------
+  
   // Interface e Informações
-  // ----------------------------------------------------
+  
   noStroke();
   fill(0, 0, 100, 0.8);
   textSize(13);
@@ -97,9 +94,9 @@ function draw() {
   }
 }
 
-// ----------------------------------------------------
+
 // CONDICIONAL 3: Clique do Rato / Toque no Ecrã
-// ----------------------------------------------------
+
 function mousePressed() {
   if (!musicaIniciada) {
     iniciarAudio();
@@ -137,9 +134,9 @@ function mousePressed() {
   tocarNotaAmbiental(notaFreq, 1.2, 0.15);
 }
 
-// ----------------------------------------------------
+
 // CONDICIONAL 5: Input do Teclado
-// ----------------------------------------------------
+
 function keyPressed() {
   if (key === ' ' || keyCode === UP_ARROW) {
     modoVisual++;
@@ -151,9 +148,9 @@ function keyPressed() {
   }
 }
 
-// ----------------------------------------------------
+
 // Desenhar Formas Personalizadas
-// ----------------------------------------------------
+
 function desenharTriangulo(x, y, r) {
   push();
   translate(x, y);
@@ -182,9 +179,9 @@ function desenharEstrela(x, y, radius1, radius2, npoints) {
   endShape(CLOSE);
 }
 
-// ----------------------------------------------------
+
 // SINTETIZADOR AMBIENTAL (Web Audio API)
-// ----------------------------------------------------
+
 function iniciarAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   
