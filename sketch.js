@@ -1,4 +1,3 @@
-
 let ondas = [];
 let modoVisual = 1; 
 let totalModos = 4;
@@ -8,17 +7,21 @@ let audioCtx;
 let musicaIniciada = false;
 
 function setup() {
-  createCanvas(700, 500);
+  // Faz o canvas ocupar a largura e altura total da janela do navegador
+  createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 360, 100, 100, 1);
+}
+
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
   // Fundo escuro com rasto suave (efeito de iluminação)
   background(240, 20, 12, 0.12);
-
   
-  // Determinar o tom da cor pelo quadrante do rato
-  
+  // Determinar o tom da cor pela posição do rato
   let hueBase;
   if (mouseX < width / 2 && mouseY < height / 2) {
     hueBase = 200; // Azul Oceano
@@ -35,10 +38,8 @@ function draw() {
   strokeWeight(1);
   line(width / 2, 0, width / 2, height);
   line(0, height / 2, width, height / 2);
-
   
-  // Atualizar e desenhar ondas
-  
+  // Desenhar ondas
   for (let i = ondas.length - 1; i >= 0; i--) {
     let o = ondas[i];
     
@@ -49,42 +50,34 @@ function draw() {
     stroke(o.cor, 70, 90, o.alfa);
     strokeWeight(2);
 
-    
-    // CONDICIONAL 2: Desenhar as diferentes formas geométricas
-    
+    // Desenhar as diferentes formas geométricas
     if (o.forma === 1) {
-      // Círculos
       ellipse(o.x, o.y, o.raio * 2);
     } 
     else if (o.forma === 2) {
-      // Quadrados
       rectMode(CENTER);
       rect(o.x, o.y, o.raio * 2, o.raio * 2, 8);
     } 
     else if (o.forma === 3) {
-      // Triângulos
       desenharTriangulo(o.x, o.y, o.raio);
     } 
     else if (o.forma === 4) {
-      // Estrelas
       desenharEstrela(o.x, o.y, o.raio * 0.5, o.raio, 5);
     }
 
-    if (o.alfa <= 0 || o.raio > 450) {
+    if (o.alfa <= 0 || o.raio > Math.max(width, height)) {
       ondas.splice(i, 1);
     }
   }
-
   
   // Interface e Informações
-  
   noStroke();
-  fill(0, 0, 100, 0.8);
+  fill(0, 0, 100, 0.9);
   textSize(13);
   textAlign(LEFT, TOP);
   text("Clica no ecrã para criar ondas de luz e som", 25, 25);
   
-  // Nome da forma atual
+  // Nome da forma atual (Corrigido para modoVisual - 1)
   let nomesFormas = ["Círculos", "Quadrados", "Triângulos", "Estrelas"];
   text(`[ESPAÇO] Mudar Forma (Atual: ${nomesFormas[modoVisual - 1]}) | [C] Limpar`, 25, 48);
 
@@ -94,9 +87,7 @@ function draw() {
   }
 }
 
-
-// CONDICIONAL 3: Clique do Rato / Toque no Ecrã
-
+// Clique do Rato / Toque no Ecrã
 function mousePressed() {
   if (!musicaIniciada) {
     iniciarAudio();
@@ -106,7 +97,7 @@ function mousePressed() {
   let corOnda;
   let notaFreq;
 
-  // CONDICIONAL 4: Ajusta a cor e a nota musical de acordo com a área clicada
+  // Ajusta a cor e a nota musical de acordo com a área clicada
   if (mouseX < width / 2 && mouseY < height / 2) {
     corOnda = 200; 
     notaFreq = 261.63; // Nota Dó
@@ -130,13 +121,10 @@ function mousePressed() {
     alfa: 1.0
   });
 
-  // Toca nota relaxante ao clicar
   tocarNotaAmbiental(notaFreq, 1.2, 0.15);
 }
 
-
-// CONDICIONAL 5: Input do Teclado
-
+// Input do Teclado
 function keyPressed() {
   if (key === ' ' || keyCode === UP_ARROW) {
     modoVisual++;
@@ -148,9 +136,7 @@ function keyPressed() {
   }
 }
 
-
 // Desenhar Formas Personalizadas
-
 function desenharTriangulo(x, y, r) {
   push();
   translate(x, y);
@@ -179,19 +165,16 @@ function desenharEstrela(x, y, radius1, radius2, npoints) {
   endShape(CLOSE);
 }
 
-
 // SINTETIZADOR AMBIENTAL (Web Audio API)
-
 function iniciarAudio() {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   
-  // Acordes suaves tocados automaticamente em loop calmo
   let escalaPentatonica = [196.00, 220.00, 261.63, 293.66, 329.63, 392.00, 440.00];
   
   setInterval(() => {
     if (musicaIniciada && audioCtx) {
       let nota = random(escalaPentatonica);
-      tocarNotaAmbiental(nota, 3.0, 0.04); // Notas com longa duração e volume suave
+      tocarNotaAmbiental(nota, 3.0, 0.04);
     }
   }, 1800);
 }
@@ -202,10 +185,9 @@ function tocarNotaAmbiental(freq, duracao, vol = 0.1) {
     let osc = audioCtx.createOscillator();
     let gain = audioCtx.createGain();
 
-    osc.type = 'sine'; // Onda senoidal pura e relaxante
+    osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-    // Fade-in e fade-out suaves para efeito de música ambiente
     gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
     gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.3);
     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duracao);
