@@ -77,7 +77,7 @@ function draw() {
   textAlign(LEFT, TOP);
   text("Clica no ecrã para criar ondas de luz e som", 25, 25);
   
-  // Nome da forma atual (Corrigido para modoVisual - 1)
+  // Nome da forma atual 
   let nomesFormas = ["Círculos", "Quadrados", "Triângulos", "Estrelas"];
   text(`[ESPAÇO] Mudar Forma (Atual: ${nomesFormas[modoVisual - 1]}) | [C] Limpar`, 25, 48);
 
